@@ -12,7 +12,11 @@ class CreateUserInTable23112018 extends Migration
      */
     public function up()
     {
-        //
+        DB::table('users')->insert([
+            'name' => 'soltan',
+            'email' => 'soltanbe@gmail.com',
+            'password' => bcrypt('123456'),
+        ]);
     }
 
     /**
