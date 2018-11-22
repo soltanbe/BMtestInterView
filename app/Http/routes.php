@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+Route::get('{ember?}', function() {
+    return View::make('ember');
+})->where('ember', '.*');
