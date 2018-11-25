@@ -18,3 +18,4 @@ Route::post('/loginTo', 'LoginToController@authenticate');
 Route::get('{ember?}', function() {
     return View::make('ember');
 })->where('ember', '.*');
+
