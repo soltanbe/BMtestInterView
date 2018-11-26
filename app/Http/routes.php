@@ -14,7 +14,22 @@
 /*Route::get('/', function () {
     return view('welcome');
 });*/
-Route::post('/loginTo', 'LoginToController@authenticate');
+
+/*Route::get('/loginTo', 'LoginToController@authenticate');*/
+
+Route::group(['prefix' => 'api'], function () {
+    Route::get('tasks', function ()    {
+        return response()->json([
+            'task_name' => 'dsadasdasd',
+            'status' => '1',
+            'isDeleted' => '0',
+            'update_date' => '',
+            'added_date' => '',
+        ]);
+    });
+
+});
+
 Route::get('{ember?}', function() {
     return View::make('ember');
 })->where('ember', '.*');

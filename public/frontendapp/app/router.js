@@ -8,7 +8,8 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.route('new_task');
-  this.route('login_page',{path:'login'});
+
+  this.route('tasks');
 });
 
 export default Router;
