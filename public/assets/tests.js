@@ -4604,6 +4604,11 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
     assert.ok(true, 'adapters/post.js should pass ESLint\n\n');
   });
 
+  QUnit.test('adapters/task.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'adapters/task.js should pass ESLint\n\n');
+  });
+
   QUnit.test('app.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'app.js should pass ESLint\n\n');
@@ -4612,6 +4617,11 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
   QUnit.test('models/post.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'models/post.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('models/task.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/task.js should pass ESLint\n\n');
   });
 
   QUnit.test('resolver.js', function (assert) {
@@ -4629,9 +4639,19 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
     assert.ok(true, 'routes/posts.js should pass ESLint\n\n');
   });
 
+  QUnit.test('routes/tasks.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/tasks.js should pass ESLint\n\n');
+  });
+
   QUnit.test('serializers/post.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'serializers/post.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('serializers/task.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'serializers/task.js should pass ESLint\n\n');
   });
 });
 define('buymeapp/tests/lint/templates.template.lint-test', [], function () {
@@ -4642,6 +4662,11 @@ define('buymeapp/tests/lint/templates.template.lint-test', [], function () {
   QUnit.test('buymeapp/templates/posts.hbs', function (assert) {
     assert.expect(1);
     assert.ok(true, 'buymeapp/templates/posts.hbs should pass TemplateLint.\n\n');
+  });
+
+  QUnit.test('buymeapp/templates/tasks.hbs', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'buymeapp/templates/tasks.hbs should pass TemplateLint.\n\nbuymeapp/templates/tasks.hbs\n  4:4  error  Incorrect indentation for `<ul>` beginning at L4:C4. Expected `<ul>` to be at an indentation of 2 but was found at 4.  block-indentation\n  5:8  error  Incorrect indentation for `{{#each}}` beginning at L5:C8. Expected `{{#each}}` to be at an indentation of 6 but was found at 8.  block-indentation\n  6:12  error  Incorrect indentation for `<li>` beginning at L6:C12. Expected `<li>` to be at an indentation of 10 but was found at 12.  block-indentation\n  7:16  error  Incorrect indentation for `{{task.task_name}}` beginning at L7:C16. Expected `{{task.task_name}}` to be at an indentation of 14 but was found at 16.  block-indentation\n  8:16  error  Incorrect indentation for `{{task.added_date}}` beginning at L8:C16. Expected `{{task.added_date}}` to be at an indentation of 14 but was found at 16.  block-indentation\n  9:16  error  Incorrect indentation for `{{task.status}}` beginning at L9:C16. Expected `{{task.status}}` to be at an indentation of 14 but was found at 16.  block-indentation\n  10:16  error  Incorrect indentation for `{{task.isDeleted}}` beginning at L10:C16. Expected `{{task.isDeleted}}` to be at an indentation of 14 but was found at 16.  block-indentation\n  17:0  error  HTML comment detected  no-html-comments\n');
   });
 });
 define('buymeapp/tests/lint/tests.lint-test', [], function () {

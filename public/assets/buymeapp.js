@@ -12,6 +12,16 @@
         host: "http://test.nidan.co.il/buymetest/public/index.php/api"
     });
 });
+;define("buymeapp/adapters/task", ["exports", "ember-data"], function (exports, _emberData) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = _emberData.default.JSONAPIAdapter.extend({
+        host: "http://test.nidan.co.il/buymetest/public/index.php/api"
+    });
+});
 ;define('buymeapp/app', ['exports', 'buymeapp/resolver', 'ember-load-initializers', 'buymeapp/config/environment'], function (exports, _resolver, _emberLoadInitializers, _environment) {
   'use strict';
 
@@ -218,6 +228,21 @@
 
     });
 });
+;define('buymeapp/models/task', ['exports', 'ember-data'], function (exports, _emberData) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = _emberData.default.Model.extend({
+        added_date: _emberData.default.attr('date'),
+        task_name: _emberData.default.attr('string'),
+        status: _emberData.default.attr('boolean'),
+        isDeleted: _emberData.default.attr('boolean'),
+        update_date: _emberData.default.attr('date')
+
+    });
+});
 ;define('buymeapp/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
   'use strict';
 
@@ -240,8 +265,8 @@
   });
 
   Router.map(function () {
-
-    this.route('posts');
+    this.route('posts', { path: '/' });
+    this.route('tasks');
   });
 
   exports.default = Router;
@@ -258,6 +283,19 @@
         }
     });
 });
+;define('buymeapp/routes/tasks', ['exports'], function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = Ember.Route.extend({
+        model() {
+
+            return this.store.findAll('task');
+        }
+    });
+});
 ;define('buymeapp/serializers/post', ['exports', 'ember-data'], function (exports, _emberData) {
     'use strict';
 
@@ -268,6 +306,20 @@
         normalizeResponse: function (store, primaryModelClass, payload, id, requestType) {
 
             payload = { posts: payload.data };
+            return this._super(store, primaryModelClass, payload, id, requestType);
+        }
+    });
+});
+;define('buymeapp/serializers/task', ['exports', 'ember-data'], function (exports, _emberData) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = _emberData.default.RESTSerializer.extend({
+        normalizeResponse: function (store, primaryModelClass, payload, id, requestType) {
+
+            payload = { tasks: payload.data };
             return this._super(store, primaryModelClass, payload, id, requestType);
         }
     });
@@ -293,6 +345,14 @@
   });
   exports.default = Ember.HTMLBars.template({ "id": "T5bb5jR9", "block": "{\"symbols\":[],\"statements\":[[7,\"h1\"],[9],[0,\"post\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/posts.hbs" } });
 });
+;define("buymeapp/templates/tasks", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "0+kJcQLs", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"ul\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\"]]],null,{\"statements\":[[0,\"            \"],[7,\"li\"],[9],[0,\"\\n                \"],[1,[22,1,[\"task_name\"]],false],[0,\"\\n                \"],[1,[22,1,[\"added_date\"]],false],[0,\"\\n                \"],[1,[22,1,[\"status\"]],false],[0,\"\\n                \"],[1,[22,1,[\"isDeleted\"]],false],[0,\"\\n\\n            \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[10],[0,\"\\n\"],[10],[0,\"\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
+});
 ;
 
 ;define('buymeapp/config/environment', [], function() {
@@ -316,7 +376,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+b9e80585"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+333f37c7"});
           }
         
 //# sourceMappingURL=buymeapp.map
