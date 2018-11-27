@@ -2,6 +2,16 @@
 
 
 
+;define("buymeapp/adapters/post", ["exports", "ember-data"], function (exports, _emberData) {
+    "use strict";
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = _emberData.default.JSONAPIAdapter.extend({
+        host: "http://test.nidan.co.il/buymetest/public/index.php/api"
+    });
+});
 ;define('buymeapp/app', ['exports', 'buymeapp/resolver', 'ember-load-initializers', 'buymeapp/config/environment'], function (exports, _resolver, _emberLoadInitializers, _environment) {
   'use strict';
 
@@ -193,6 +203,21 @@
     initialize: _initializeStoreService.default
   };
 });
+;define('buymeapp/models/post', ['exports', 'ember-data'], function (exports, _emberData) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = _emberData.default.Model.extend({
+        task_name: _emberData.default.attr(),
+        status: _emberData.default.attr(),
+        isDeleted: _emberData.default.attr(),
+        update_date: _emberData.default.attr(),
+        added_date: _emberData.default.attr()
+
+    });
+});
 ;define('buymeapp/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
   'use strict';
 
@@ -214,9 +239,38 @@
     rootURL: _environment.default.rootURL
   });
 
-  Router.map(function () {});
+  Router.map(function () {
+
+    this.route('posts');
+  });
 
   exports.default = Router;
+});
+;define('buymeapp/routes/posts', ['exports'], function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = Ember.Route.extend({
+        model() {
+            return this.store.findAll('post');
+        }
+    });
+});
+;define('buymeapp/serializers/post', ['exports', 'ember-data'], function (exports, _emberData) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = _emberData.default.RESTSerializer.extend({
+        normalizeResponse: function (store, primaryModelClass, payload, id, requestType) {
+
+            payload = { posts: payload.data };
+            return this._super(store, primaryModelClass, payload, id, requestType);
+        }
+    });
 });
 ;define('buymeapp/services/ajax', ['exports', 'ember-ajax/services/ajax'], function (exports, _ajax) {
   'use strict';
@@ -231,13 +285,13 @@
     }
   });
 });
-;define("buymeapp/templates/application", ["exports"], function (exports) {
+;define("buymeapp/templates/posts", ["exports"], function (exports) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "8fJHDHlg", "block": "{\"symbols\":[],\"statements\":[[1,[21,\"welcome-page\"],false],[0,\"\\n\"],[0,\"\\n\"],[1,[21,\"outlet\"],false]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/application.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "T5bb5jR9", "block": "{\"symbols\":[],\"statements\":[[7,\"h1\"],[9],[0,\"post\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/posts.hbs" } });
 });
 ;
 
@@ -262,7 +316,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+a7f8face"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+4875d341"});
           }
         
 //# sourceMappingURL=buymeapp.map

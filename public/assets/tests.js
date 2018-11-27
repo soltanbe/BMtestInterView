@@ -4599,9 +4599,19 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
 
   QUnit.module('ESLint | app');
 
+  QUnit.test('adapters/post.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'adapters/post.js should pass ESLint\n\n');
+  });
+
   QUnit.test('app.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'app.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('models/post.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'models/post.js should pass ESLint\n\n');
   });
 
   QUnit.test('resolver.js', function (assert) {
@@ -4613,15 +4623,25 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
     assert.expect(1);
     assert.ok(true, 'router.js should pass ESLint\n\n');
   });
+
+  QUnit.test('routes/posts.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'routes/posts.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('serializers/post.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'serializers/post.js should pass ESLint\n\n');
+  });
 });
 define('buymeapp/tests/lint/templates.template.lint-test', [], function () {
   'use strict';
 
   QUnit.module('TemplateLint');
 
-  QUnit.test('buymeapp/templates/application.hbs', function (assert) {
+  QUnit.test('buymeapp/templates/posts.hbs', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'buymeapp/templates/application.hbs should pass TemplateLint.\n\n');
+    assert.ok(true, 'buymeapp/templates/posts.hbs should pass TemplateLint.\n\n');
   });
 });
 define('buymeapp/tests/lint/tests.lint-test', [], function () {
@@ -4632,6 +4652,36 @@ define('buymeapp/tests/lint/tests.lint-test', [], function () {
   QUnit.test('test-helper.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'test-helper.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('unit/routes/login-page-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/login-page-test.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('unit/routes/login-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/login-test.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('unit/routes/new-task-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/new-task-test.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('unit/routes/posts-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/posts-test.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('unit/routes/tasks-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/tasks-test.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('unit/routes/test-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'unit/routes/test-test.js should pass ESLint\n\n');
   });
 });
 define("qunit/index", ["exports"], function (exports) {
@@ -4657,6 +4707,78 @@ define('buymeapp/tests/test-helper', ['buymeapp/app', 'buymeapp/config/environme
   (0, _testHelpers.setApplication)(_app.default.create(_environment.default.APP));
 
   (0, _emberQunit.start)();
+});
+define('buymeapp/tests/unit/routes/login-page-test', ['qunit', 'ember-qunit'], function (_qunit, _emberQunit) {
+  'use strict';
+
+  (0, _qunit.module)('Unit | Route | login_page', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:login-page');
+      assert.ok(route);
+    });
+  });
+});
+define('buymeapp/tests/unit/routes/login-test', ['qunit', 'ember-qunit'], function (_qunit, _emberQunit) {
+  'use strict';
+
+  (0, _qunit.module)('Unit | Route | login', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:login');
+      assert.ok(route);
+    });
+  });
+});
+define('buymeapp/tests/unit/routes/new-task-test', ['qunit', 'ember-qunit'], function (_qunit, _emberQunit) {
+  'use strict';
+
+  (0, _qunit.module)('Unit | Route | new_task', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:new-task');
+      assert.ok(route);
+    });
+  });
+});
+define('buymeapp/tests/unit/routes/posts-test', ['qunit', 'ember-qunit'], function (_qunit, _emberQunit) {
+  'use strict';
+
+  (0, _qunit.module)('Unit | Route | posts', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:posts');
+      assert.ok(route);
+    });
+  });
+});
+define('buymeapp/tests/unit/routes/tasks-test', ['qunit', 'ember-qunit'], function (_qunit, _emberQunit) {
+  'use strict';
+
+  (0, _qunit.module)('Unit | Route | tasks', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:tasks');
+      assert.ok(route);
+    });
+  });
+});
+define('buymeapp/tests/unit/routes/test-test', ['qunit', 'ember-qunit'], function (_qunit, _emberQunit) {
+  'use strict';
+
+  (0, _qunit.module)('Unit | Route | test', function (hooks) {
+    (0, _emberQunit.setupTest)(hooks);
+
+    (0, _qunit.test)('it exists', function (assert) {
+      let route = this.owner.lookup('route:test');
+      assert.ok(route);
+    });
+  });
 });
 define('buymeapp/config/environment', [], function() {
   var prefix = 'buymeapp';
