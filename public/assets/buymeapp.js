@@ -351,7 +351,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "0+kJcQLs", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"ul\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\"]]],null,{\"statements\":[[0,\"            \"],[7,\"li\"],[9],[0,\"\\n                \"],[1,[22,1,[\"task_name\"]],false],[0,\"\\n                \"],[1,[22,1,[\"added_date\"]],false],[0,\"\\n                \"],[1,[22,1,[\"status\"]],false],[0,\"\\n                \"],[1,[22,1,[\"isDeleted\"]],false],[0,\"\\n\\n            \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[10],[0,\"\\n\"],[10],[0,\"\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "7GU0aACg", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"ul\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\"]]],null,{\"statements\":[[0,\"            \"],[7,\"li\"],[9],[0,\"\\n                \"],[1,[22,1,[\"task_name\"]],false],[0,\"\\n                \"],[1,[22,1,[\"added_date\"]],false],[0,\"\\n\\n\\n            \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[10],[0,\"\\n\"],[10],[0,\"\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
 });
 ;
 
@@ -376,7 +376,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+333f37c7"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+b5edc236"});
           }
         
 //# sourceMappingURL=buymeapp.map
