@@ -18,7 +18,7 @@
 /*Route::get('/loginTo', 'LoginToController@authenticate');*/
 
 Route::group(['prefix' => 'api','middleware' => ['api', 'cors']], function () {
-    Route::get('posts', function ()    {
+  /*  Route::get('posts', function ()    {
 
         return response()->json(array('data'=>array(
             array(
@@ -46,7 +46,9 @@ Route::group(['prefix' => 'api','middleware' => ['api', 'cors']], function () {
         )
 
         ));
-    });
+    });*/
+    Route::get('/tasks', 'TasksController@getTasks');
+
 
 });
 

@@ -1,0 +1,19 @@
+<h1> Tasks </h1>
+
+<div class="row">
+    <ul>
+        {{#each model   as |task|}}
+            <li>
+                {{task.task_name}}
+                {{task.added_date }}
+                {{task.status }}
+                {{task.isDeleted }}
+
+            </li>
+
+        {{/each}}
+    </ul>
+</div>
+<!--
+$scope.prev_time = moment().format("HH:mm:ss");
+$scope.prev_date = moment().format("DD/MM/YY");-->
