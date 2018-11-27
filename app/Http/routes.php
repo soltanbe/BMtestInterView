@@ -18,27 +18,25 @@
 /*Route::get('/loginTo', 'LoginToController@authenticate');*/
 
 Route::group(['prefix' => 'api','middleware' => ['api', 'cors']], function () {
-    Route::get('tasks', function ()    {
-        echo " {
-  \"data\": {
-    \"type\": \"articles\",
-    \"id\": \"1\"
-  }
-}";
-       /* return response()->json(array('data'=>array(
+    Route::get('posts', function ()    {
+
+        return response()->json(array('data'=>array(
             array(
+                'id'=>5,
                 'task_name' => 'dsadasdasd',
                 'status' => '1',
                 'isDeleted' => '0',
                 'update_date' => '',
                 'added_date' => '',
             ),array(
+                'id'=>2,
                     'task_name' => 'dsadasdasd',
                     'status' => '1',
                     'isDeleted' => '0',
                     'update_date' => '',
                     'added_date' => '',
                 ),array(
+                'id'=>3,
                     'task_name' => 'dsadasdasd',
                     'status' => '1',
                     'isDeleted' => '0',
@@ -47,7 +45,7 @@ Route::group(['prefix' => 'api','middleware' => ['api', 'cors']], function () {
                 )
         )
 
-        ));*/
+        ));
     });
 
 });
