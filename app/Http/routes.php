@@ -17,15 +17,37 @@
 
 /*Route::get('/loginTo', 'LoginToController@authenticate');*/
 
-Route::group(['prefix' => 'api'], function () {
+Route::group(['prefix' => 'api','middleware' => ['api', 'cors']], function () {
     Route::get('tasks', function ()    {
-        return response()->json([
-            'task_name' => 'dsadasdasd',
-            'status' => '1',
-            'isDeleted' => '0',
-            'update_date' => '',
-            'added_date' => '',
-        ]);
+        echo " {
+  \"data\": {
+    \"type\": \"articles\",
+    \"id\": \"1\"
+  }
+}";
+       /* return response()->json(array('data'=>array(
+            array(
+                'task_name' => 'dsadasdasd',
+                'status' => '1',
+                'isDeleted' => '0',
+                'update_date' => '',
+                'added_date' => '',
+            ),array(
+                    'task_name' => 'dsadasdasd',
+                    'status' => '1',
+                    'isDeleted' => '0',
+                    'update_date' => '',
+                    'added_date' => '',
+                ),array(
+                    'task_name' => 'dsadasdasd',
+                    'status' => '1',
+                    'isDeleted' => '0',
+                    'update_date' => '',
+                    'added_date' => '',
+                )
+        )
+
+        ));*/
     });
 
 });

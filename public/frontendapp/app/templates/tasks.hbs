@@ -1,1 +1,14 @@
-{{outlet}}
+<h1> manage </h1>
+
+<div class="row">
+    <ul>
+        {{#each model   as |itemon|}}
+            <li>
+                {{itemon.task_name}}
+                {{itemon.last_name }}
+                {{itemon.date_request }}
+            </li>
+
+        {{/each}}
+    </ul>
+</div>
