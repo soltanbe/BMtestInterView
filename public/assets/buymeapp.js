@@ -376,7 +376,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+b5edc236"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+a0aed666"});
           }
         
 //# sourceMappingURL=buymeapp.map
