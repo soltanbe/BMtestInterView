@@ -62,6 +62,7 @@
                     }
                 }).then(function (resp) {
                     that.set('task_name', '');
+                    location.reload();
                 }).catch(function (error) {
                     // handle errors here
                 });
@@ -304,11 +305,11 @@
         value: true
     });
     exports.default = _emberData.default.Model.extend({
-        added_date: _emberData.default.attr('date'),
+        added_date: _emberData.default.attr('string'),
         task_name: _emberData.default.attr('string'),
         status: _emberData.default.attr('boolean'),
         isDeleted: _emberData.default.attr('boolean'),
-        update_date: _emberData.default.attr('date')
+        update_date: _emberData.default.attr('string')
 
     });
 });
@@ -359,7 +360,7 @@
         value: true
     });
 
-    let summary;
+    let that = null;
     exports.default = Ember.Route.extend({
         /* getSum: async function(args) {
                let result = await Ember.$.ajax({
@@ -382,12 +383,91 @@
                  // handle errors here
              });
          },*/
+        init() {},
         model() {
-
+            this.that = this;
             return Ember.RSVP.hash({
                 tasks: this.store.findAll('task')
             });
+        },
+        actions: {
+            editTask(id, task_name, status) {
+
+                swal({
+                    title: 'Edit Task ' + '<b>' + task_name + '</b>',
+                    html: this.buildHtmlForm(id, task_name, status),
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Update',
+                    onOpen: function () {
+                        document.getElementById("status").value = status == true ? 1 : 0;
+                    }
+                }).then(result => {
+                    if (result.value) {
+                        this.doActionInServer(id, 'edit', document.getElementById("task_name").value, document.getElementById("status").value);
+                        swal('updated!', 'Your task has been updated successfully.', 'success').then(function () {
+                            //יש דרך אחרת לטעון את המודל שוב אבל נגמר הזמן לא הספקתי כרגע שם את זה על רגיל עם טעינת דף ואני אחקור את הנושא בנמשך לצורך לצידה ושיפור
+                            location.reload();
+                            //this.get('target.router').refresh();
+                        });
+                    }
+                });
+            },
+            deleteTask(id) {
+                swal({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(result => {
+                    if (result.value) {
+                        this.doActionInServer(id, 'delete');
+                        swal('deleted!', 'Your task has been deleted successfully.', 'success').then(function () {
+                            //יש דרך אחרת לטעון את המודל שוב אבל נגמר הזמן לא הספקתי כרגע שם את זה על רגיל עם טעינת דף ואני אחקור את הנושא בנמשך לצורך לצידה ושיפור
+                            location.reload();
+                            //this.get('target.router').refresh();
+                        });
+                    }
+                });
+            }
+        },
+        doActionInServer(id, action, task_name, status) {
+            let dataSend = {
+                action: action,
+                id: id
+            };
+            if (typeof task_name != 'undefined') {
+                dataSend.task_name = task_name;
+            }
+            if (typeof status != 'undefined') {
+                dataSend.status = status;
+            }
+            console.log(dataSend);
+            Ember.$.ajax({
+                url: 'http://test.nidan.co.il/buymetest/public/index.php/api/' + action,
+                type: "POST",
+                data: dataSend
+            }).then(function (resp) {}).catch(function (error) {
+                // handle errors here
+            });
+        },
+        convertToDate: function (d) {
+            return moment(d).format("DD/MM/YY HH:mm:ss");
+        },
+        buildHtmlForm: function (id, task_name, status) {
+            let html = '<hr><form>';
+            html += '' + '<div class="form-group row">' + '<label class="col-md-4">Task Name</label>' + '<div class="col-md-8">' + '<input type="text" class="form-control" id="task_name" value="' + task_name + '">' + '</div>' + '</div>' + '<div class="form-group row">' + '<label class="col-md-4">Status</label>' + '<div class="col-md-8">' + '<select class="form-control" id="status">' + '<option value="1">Completed</option>' + '<option value="0">UnCompleted</option>' + '</select>';
+            '</div>';
+            '</div>';
+            html += '<form>';
+
+            return html;
         }
+
     });
 });
 ;define('buymeapp/serializers/post', ['exports', 'ember-data'], function (exports, _emberData) {
@@ -445,7 +525,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "FIuIwadS", "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        completed : \"],[7,\"b\"],[9],[1,[21,\"completed\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        uncompleted : \"],[7,\"b\"],[9],[1,[21,\"uncompleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        total : \"],[7,\"b\"],[9],[1,[21,\"total\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        deleted : \"],[7,\"b\"],[9],[1,[21,\"deleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/summary-task.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "NjIoI9by", "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskCompleted\"],[9],[0,\"\\n        completed : \"],[7,\"b\"],[9],[1,[21,\"completed\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskUnCompleted\"],[9],[0,\"\\n        uncompleted : \"],[7,\"b\"],[9],[1,[21,\"uncompleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div\"],[9],[0,\"\\n        total : \"],[7,\"b\"],[9],[1,[21,\"total\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n   \"],[2,\" <div class=\\\"col-md-3 taskDeleted\\\">\\n        deleted : <b>{{deleted}}</b>\\n    </div>\"],[0,\"\\n\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/summary-task.hbs" } });
 });
 ;define("buymeapp/templates/posts", ["exports"], function (exports) {
   "use strict";
@@ -461,7 +541,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "huIWWmmd", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"div\"],[11,\"class\",\"container\"],[9],[0,\"\\n    \"],[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n    \"],[1,[21,\"add-task\"],false],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n        \"],[7,\"ul\"],[11,\"class\",\"list-group list-grpuo-custom\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\",\"tasks\"]]],null,{\"statements\":[[0,\"                \"],[7,\"li\"],[11,\"class\",\"list-group-item\"],[9],[0,\"\\n                    \"],[1,[22,1,[\"task_name\"]],false],[0,\" \"],[7,\"span\"],[11,\"class\",\"pull-right custom-icon-edit\"],[12,\"task-id-edit\",[28,[[22,1,[\"id\"]]]]],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-edit\"],[9],[10],[10],[7,\"span\"],[12,\"task-id-delete\",[28,[[22,1,[\"id\"]]]]],[11,\"class\",\"pull-right custom-icon-trash\"],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-trash\"],[9],[10],[10],[0,\"\\n                \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[1,[21,\"summary-task\"],false],[0,\"\\n\"],[10],[0,\"\\n\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "aJj+rXPX", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"div\"],[11,\"class\",\"container\"],[9],[0,\"\\n    \"],[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n    \"],[1,[21,\"add-task\"],false],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n        \"],[7,\"ul\"],[11,\"class\",\"list-group list-grpuo-custom\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\",\"tasks\"]]],null,{\"statements\":[[0,\"                \"],[7,\"li\"],[11,\"class\",\"list-group-item\"],[9],[0,\"\\n\"],[4,\"if\",[[22,1,[\"status\"]]],null,{\"statements\":[[0,\"                        \"],[7,\"span\"],[11,\"class\",\"taskCompleted font-size-task\"],[9],[1,[22,1,[\"task_name\"]],false],[10],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"                        \"],[7,\"span\"],[11,\"class\",\"taskUnCompleted font-size-task\"],[9],[1,[22,1,[\"task_name\"]],false],[10],[0,\"\\n\"]],\"parameters\":[]}],[0,\"                    \"],[7,\"span\"],[9],[1,[22,1,[\"added_date\"]],false],[10],[0,\"\\n                    \"],[7,\"span\"],[11,\"class\",\"pull-right custom-icon-edit\"],[3,\"action\",[[22,0,[]],\"editTask\",[22,1,[\"id\"]],[22,1,[\"task_name\"]],[22,1,[\"status\"]]]],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-edit\"],[9],[10],[10],[0,\"\\n                    \"],[7,\"span\"],[11,\"class\",\"pull-right custom-icon-trash\"],[3,\"action\",[[22,0,[]],\"deleteTask\",[22,1,[\"id\"]]]],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-trash\"],[9],[10],[10],[0,\"\\n                \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[1,[21,\"summary-task\"],false],[0,\"\\n\"],[10],[0,\"\\n\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
 });
 ;
 
@@ -486,7 +566,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+c7a7f787"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+bf6c097c"});
           }
         
 //# sourceMappingURL=buymeapp.map
