@@ -7,8 +7,8 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('posts',{path:'/'});
-  this.route('tasks');
+  this.route('posts');
+  this.route('tasks',{path:'/'});
 });
 
 export default Router;

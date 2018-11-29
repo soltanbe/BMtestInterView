@@ -35,4 +35,45 @@ class TasksController extends Controller
 
         );
     }
+    public function getSummay(Request $request){
+        $requsetd=$request->all();
+        $result=TasksModel::getSummary($requsetd);
+        /*   $rows=array();
+           if(!empty($result) && is_array($result)){
+               foreach ($result as $k=>$v){
+                   $rows[]=array(
+                       $k=>$v
+                   );
+               }
+           }*/
+
+
+        return response()->json(
+            array(
+                'summary'=>$result,
+            )
+
+        );
+    }
+    public function addNewTask(Request $request){
+        $requsetd=$request->all();
+        $result=TasksModel::addNewTask($requsetd);
+        if($result==1){
+            return response()->json(
+                array(
+                    'status'=>'success',
+                )
+
+            );
+        }else{
+            return response()->json(
+                array(
+                    'error'=>$result,
+                )
+
+            );
+        }
+
+    }
+
 }
