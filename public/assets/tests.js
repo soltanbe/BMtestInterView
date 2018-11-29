@@ -4594,6 +4594,64 @@ define('ember-test-helpers/wait', ['exports', '@ember/test-helpers/settled', '@e
     }, { timeout: Infinity });
   }
 });
+define('buymeapp/tests/integration/components/add-task-test', ['qunit', 'ember-qunit', '@ember/test-helpers'], function (_qunit, _emberQunit, _testHelpers) {
+  'use strict';
+
+  (0, _qunit.module)('Integration | Component | add-task', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template({
+        "id": "OL+cbp64",
+        "block": "{\"symbols\":[],\"statements\":[[1,[21,\"add-task\"],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      assert.equal(this.element.textContent.trim(), '');
+
+      // Template block usage:
+      await (0, _testHelpers.render)(Ember.HTMLBars.template({
+        "id": "S2X0ghFg",
+        "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[4,\"add-task\",null,null,{\"statements\":[[0,\"        template block text\\n\"]],\"parameters\":[]},null],[0,\"    \"]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
+define('buymeapp/tests/integration/components/summary-task-test', ['qunit', 'ember-qunit', '@ember/test-helpers'], function (_qunit, _emberQunit, _testHelpers) {
+  'use strict';
+
+  (0, _qunit.module)('Integration | Component | summary-task', function (hooks) {
+    (0, _emberQunit.setupRenderingTest)(hooks);
+
+    (0, _qunit.test)('it renders', async function (assert) {
+      // Set any properties with this.set('myProperty', 'value');
+      // Handle any actions with this.set('myAction', function(val) { ... });
+
+      await (0, _testHelpers.render)(Ember.HTMLBars.template({
+        "id": "xJrGbXAe",
+        "block": "{\"symbols\":[],\"statements\":[[1,[21,\"summary-task\"],false]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      assert.equal(this.element.textContent.trim(), '');
+
+      // Template block usage:
+      await (0, _testHelpers.render)(Ember.HTMLBars.template({
+        "id": "q+SgNfgb",
+        "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[4,\"summary-task\",null,null,{\"statements\":[[0,\"        template block text\\n\"]],\"parameters\":[]},null],[0,\"    \"]],\"hasEval\":false}",
+        "meta": {}
+      }));
+
+      assert.equal(this.element.textContent.trim(), 'template block text');
+    });
+  });
+});
 define('buymeapp/tests/lint/app.lint-test', [], function () {
   'use strict';
 
@@ -4612,6 +4670,16 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
   QUnit.test('app.js', function (assert) {
     assert.expect(1);
     assert.ok(true, 'app.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('components/add-task.js', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'components/add-task.js should pass ESLint\n\n5:12 - Use import { inject } from \'@ember/service\'; instead of using Ember.inject.service (ember/new-module-imports)\n5:12 - \'Ember\' is not defined. (no-undef)\n11:13 - Use import $ from \'jquery\'; instead of using Ember.$ (ember/new-module-imports)\n11:13 - \'Ember\' is not defined. (no-undef)\n17:26 - \'resp\' is defined but never used. (no-unused-vars)\n20:31 - \'error\' is defined but never used. (no-unused-vars)');
+  });
+
+  QUnit.test('components/summary-task.js', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'components/summary-task.js should pass ESLint\n\n12:9 - Use import $ from \'jquery\'; instead of using Ember.$ (ember/new-module-imports)\n12:9 - \'Ember\' is not defined. (no-undef)\n24:27 - \'error\' is defined but never used. (no-unused-vars)');
   });
 
   QUnit.test('models/post.js', function (assert) {
@@ -4641,7 +4709,7 @@ define('buymeapp/tests/lint/app.lint-test', [], function () {
 
   QUnit.test('routes/tasks.js', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'routes/tasks.js should pass ESLint\n\n');
+    assert.ok(false, 'routes/tasks.js should pass ESLint\n\n2:5 - \'summary\' is defined but never used. (no-unused-vars)\n34:16 - Use import { hash } from \'rsvp\'; instead of using Ember.RSVP.hash (ember/new-module-imports)\n34:16 - \'Ember\' is not defined. (no-undef)');
   });
 
   QUnit.test('serializers/post.js', function (assert) {
@@ -4659,6 +4727,16 @@ define('buymeapp/tests/lint/templates.template.lint-test', [], function () {
 
   QUnit.module('TemplateLint');
 
+  QUnit.test('buymeapp/templates/components/add-task.hbs', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'buymeapp/templates/components/add-task.hbs should pass TemplateLint.\n\nbuymeapp/templates/components/add-task.hbs\n  1:30  error  Incorrect indentation of htmlAttribute \'class\' beginning at L1:C30. Expected \'class\' to be at L2:C24.  attribute-indentation\n  1:51  error  Incorrect indentation of htmlAttribute \'style\' beginning at L1:C51. Expected \'style\' to be at L3:C24.  attribute-indentation\n  1:79  error  Incorrect indentation of element modifier \'action\' beginning at L1:C79. Expected \'action\' to be at L4:C24.  attribute-indentation\n  1:104  error  Incorrect indentation of close bracket \'>\' for the element \'<button>\' beginning at L1:C104. Expected \'<button>\' to be at L5:C22.  attribute-indentation\n  1:118  error  Incorrect indentation of close tag \'</button>\' for element \'<button>\' beginning at L1:C118. Expected \'</button>\' to be at L1:C22.  attribute-indentation\n  1:51  error  elements cannot have inline styles  no-inline-styles\n  1:88  error  you must use double quotes in templates  quotes\n  1:158  error  you must use double quotes in templates  quotes\n');
+  });
+
+  QUnit.test('buymeapp/templates/components/summary-task.hbs', function (assert) {
+    assert.expect(1);
+    assert.ok(false, 'buymeapp/templates/components/summary-task.hbs should pass TemplateLint.\n\nbuymeapp/templates/components/summary-task.hbs\n  3:4  error  Incorrect indentation for `<div>` beginning at L3:C4. Expected `<div>` to be at an indentation of 2 but was found at 4.  block-indentation\n  6:4  error  Incorrect indentation for `<div>` beginning at L6:C4. Expected `<div>` to be at an indentation of 2 but was found at 4.  block-indentation\n  9:4  error  Incorrect indentation for `<div>` beginning at L9:C4. Expected `<div>` to be at an indentation of 2 but was found at 4.  block-indentation\n  12:4  error  Incorrect indentation for `<div>` beginning at L12:C4. Expected `<div>` to be at an indentation of 2 but was found at 4.  block-indentation\n  3:26  error  Incorrect indentation for `\n        completed : ` beginning at L3:C26. Expected `\n        completed : ` to be at an indentation of 6 but was found at 8.  block-indentation\n  6:26  error  Incorrect indentation for `\n        uncompleted : ` beginning at L6:C26. Expected `\n        uncompleted : ` to be at an indentation of 6 but was found at 8.  block-indentation\n  9:26  error  Incorrect indentation for `\n        total : ` beginning at L9:C26. Expected `\n        total : ` to be at an indentation of 6 but was found at 8.  block-indentation\n  12:26  error  Incorrect indentation for `\n        deleted : ` beginning at L12:C26. Expected `\n        deleted : ` to be at an indentation of 6 but was found at 8.  block-indentation\n');
+  });
+
   QUnit.test('buymeapp/templates/posts.hbs', function (assert) {
     assert.expect(1);
     assert.ok(true, 'buymeapp/templates/posts.hbs should pass TemplateLint.\n\n');
@@ -4666,13 +4744,23 @@ define('buymeapp/tests/lint/templates.template.lint-test', [], function () {
 
   QUnit.test('buymeapp/templates/tasks.hbs', function (assert) {
     assert.expect(1);
-    assert.ok(false, 'buymeapp/templates/tasks.hbs should pass TemplateLint.\n\nbuymeapp/templates/tasks.hbs\n  4:4  error  Incorrect indentation for `<ul>` beginning at L4:C4. Expected `<ul>` to be at an indentation of 2 but was found at 4.  block-indentation\n  5:8  error  Incorrect indentation for `{{#each}}` beginning at L5:C8. Expected `{{#each}}` to be at an indentation of 6 but was found at 8.  block-indentation\n  6:12  error  Incorrect indentation for `<li>` beginning at L6:C12. Expected `<li>` to be at an indentation of 10 but was found at 12.  block-indentation\n  7:16  error  Incorrect indentation for `{{task.task_name}}` beginning at L7:C16. Expected `{{task.task_name}}` to be at an indentation of 14 but was found at 16.  block-indentation\n  8:16  error  Incorrect indentation for `{{task.added_date}}` beginning at L8:C16. Expected `{{task.added_date}}` to be at an indentation of 14 but was found at 16.  block-indentation\n  16:0  error  HTML comment detected  no-html-comments\n');
+    assert.ok(false, 'buymeapp/templates/tasks.hbs should pass TemplateLint.\n\nbuymeapp/templates/tasks.hbs\n  2:4  error  Incorrect indentation for `<h1>` beginning at L2:C4. Expected `<h1>` to be at an indentation of 2 but was found at 4.  block-indentation\n  3:4  error  Incorrect indentation for `{{add-task}}` beginning at L3:C4. Expected `{{add-task}}` to be at an indentation of 2 but was found at 4.  block-indentation\n  4:4  error  Incorrect indentation for `<div>` beginning at L4:C4. Expected `<div>` to be at an indentation of 2 but was found at 4.  block-indentation\n  14:4  error  Incorrect indentation for `{{summary-task}}` beginning at L14:C4. Expected `{{summary-task}}` to be at an indentation of 2 but was found at 4.  block-indentation\n  5:8  error  Incorrect indentation for `<ul>` beginning at L5:C8. Expected `<ul>` to be at an indentation of 6 but was found at 8.  block-indentation\n  6:12  error  Incorrect indentation for `{{#each}}` beginning at L6:C12. Expected `{{#each}}` to be at an indentation of 10 but was found at 12.  block-indentation\n  7:16  error  Incorrect indentation for `<li>` beginning at L7:C16. Expected `<li>` to be at an indentation of 14 but was found at 16.  block-indentation\n  8:20  error  Incorrect indentation for `{{task.task_name}}` beginning at L8:C20. Expected `{{task.task_name}}` to be at an indentation of 18 but was found at 20.  block-indentation\n  17:0  error  HTML comment detected  no-html-comments\n  8:94  error  Unnecessary string concatenation. Use {{task.id}} instead of "{{task.id}}".  no-unnecessary-concat\n  8:163  error  Unnecessary string concatenation. Use {{task.id}} instead of "{{task.id}}".  no-unnecessary-concat\n');
   });
 });
 define('buymeapp/tests/lint/tests.lint-test', [], function () {
   'use strict';
 
   QUnit.module('ESLint | tests');
+
+  QUnit.test('integration/components/add-task-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/add-task-test.js should pass ESLint\n\n');
+  });
+
+  QUnit.test('integration/components/summary-task-test.js', function (assert) {
+    assert.expect(1);
+    assert.ok(true, 'integration/components/summary-task-test.js should pass ESLint\n\n');
+  });
 
   QUnit.test('test-helper.js', function (assert) {
     assert.expect(1);

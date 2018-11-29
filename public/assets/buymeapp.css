@@ -1,0 +1,15 @@
+.list-grpuo-custom{
+    width: 100%;
+    max-height: 600px;
+    overflow: scroll;
+}
+.custom-icon-edit{
+     font-size: 15px;
+     color:blue;
+    margin-right: 5px;
+ }
+.custom-icon-trash{
+    font-size: 15px;
+    color:red;
+    margin-right: 5px;
+}

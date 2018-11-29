@@ -40,6 +40,75 @@
 
   exports.default = App;
 });
+;define('buymeapp/components/add-task', ['exports'], function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = Ember.Component.extend({
+
+        store: Ember.inject.service(),
+
+        actions: {
+
+            add_new_task: function () {
+                let that = this;
+                Ember.$.ajax({
+                    url: 'http://test.nidan.co.il/buymetest/public/index.php/api/add_new_task',
+                    type: "POST",
+                    data: {
+                        task_name: this.get('task_name')
+                    }
+                }).then(function (resp) {
+                    that.set('task_name', '');
+                }).catch(function (error) {
+                    // handle errors here
+                });
+
+                /* this.get('store').query('task', {
+                     filter: {
+                         id: '5'
+                     }
+                 }).then(function(peters) {
+                     console.log(peters)
+                 });*/
+            }
+        }
+    });
+});
+;define('buymeapp/components/summary-task', ['exports'], function (exports) {
+    'use strict';
+
+    Object.defineProperty(exports, "__esModule", {
+        value: true
+    });
+    exports.default = Ember.Component.extend({
+
+        init() {
+
+            this._super(...arguments);
+            this.getsummaryData(this);
+        },
+        getsummaryData: function (that) {
+
+            Ember.$.ajax({
+                url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
+                type: "get",
+                data: {}
+            }).then(function (resp) {
+                let summary = resp.summary;
+                that.set('completed', summary[0].completed);
+                that.set('uncompleted', summary[0].uncompleted);
+                that.set('total', summary[0].total);
+                that.set('deleted', summary[0].deleted);
+            }).catch(function (error) {
+                // handle errors here
+            });
+        }
+
+    });
+});
 ;define('buymeapp/components/welcome-page', ['exports', 'ember-welcome-page/components/welcome-page'], function (exports, _welcomePage) {
   'use strict';
 
@@ -265,8 +334,8 @@
   });
 
   Router.map(function () {
-    this.route('posts', { path: '/' });
-    this.route('tasks');
+    this.route('posts');
+    this.route('tasks', { path: '/' });
   });
 
   exports.default = Router;
@@ -289,10 +358,35 @@
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
+
+    let summary;
     exports.default = Ember.Route.extend({
+        /* getSum: async function(args) {
+               let result = await Ember.$.ajax({
+                 url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
+                 type: "get",
+                 data: {
+                  }
+             });
+              return result;
+         },
+         getsummaryData:async function(that){
+              await Ember.$.ajax({
+                 url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
+                 type: "get",
+                 data: {
+                  }
+             }).then(function(resp){
+                  that.summary=resp;
+             }).catch(function(error){
+                 // handle errors here
+             });
+         },*/
         model() {
 
-            return this.store.findAll('task');
+            return Ember.RSVP.hash({
+                tasks: this.store.findAll('task')
+            });
         }
     });
 });
@@ -337,6 +431,22 @@
     }
   });
 });
+;define("buymeapp/templates/components/add-task", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "MPnpiB57", "block": "{\"symbols\":[],\"statements\":[[7,\"div\"],[11,\"class\",\"row mb-2\"],[9],[7,\"button\"],[11,\"class\",\"btn btn-info\"],[11,\"style\",\"margin-right: 10px;\"],[3,\"action\",[[22,0,[]],\"add_new_task\"]],[9],[0,\" add new task\"],[10],[0,\" \"],[1,[27,\"input\",null,[[\"value\",\"type\"],[[23,[\"task_name\"]],\"text\"]]],false],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/add-task.hbs" } });
+});
+;define("buymeapp/templates/components/summary-task", ["exports"], function (exports) {
+  "use strict";
+
+  Object.defineProperty(exports, "__esModule", {
+    value: true
+  });
+  exports.default = Ember.HTMLBars.template({ "id": "FIuIwadS", "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        completed : \"],[7,\"b\"],[9],[1,[21,\"completed\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        uncompleted : \"],[7,\"b\"],[9],[1,[21,\"uncompleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        total : \"],[7,\"b\"],[9],[1,[21,\"total\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-3\"],[9],[0,\"\\n        deleted : \"],[7,\"b\"],[9],[1,[21,\"deleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/summary-task.hbs" } });
+});
 ;define("buymeapp/templates/posts", ["exports"], function (exports) {
   "use strict";
 
@@ -351,7 +461,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "7GU0aACg", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"ul\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\"]]],null,{\"statements\":[[0,\"            \"],[7,\"li\"],[9],[0,\"\\n                \"],[1,[22,1,[\"task_name\"]],false],[0,\"\\n                \"],[1,[22,1,[\"added_date\"]],false],[0,\"\\n\\n\\n            \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"    \"],[10],[0,\"\\n\"],[10],[0,\"\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "huIWWmmd", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"div\"],[11,\"class\",\"container\"],[9],[0,\"\\n    \"],[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n    \"],[1,[21,\"add-task\"],false],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n        \"],[7,\"ul\"],[11,\"class\",\"list-group list-grpuo-custom\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\",\"tasks\"]]],null,{\"statements\":[[0,\"                \"],[7,\"li\"],[11,\"class\",\"list-group-item\"],[9],[0,\"\\n                    \"],[1,[22,1,[\"task_name\"]],false],[0,\" \"],[7,\"span\"],[11,\"class\",\"pull-right custom-icon-edit\"],[12,\"task-id-edit\",[28,[[22,1,[\"id\"]]]]],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-edit\"],[9],[10],[10],[7,\"span\"],[12,\"task-id-delete\",[28,[[22,1,[\"id\"]]]]],[11,\"class\",\"pull-right custom-icon-trash\"],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-trash\"],[9],[10],[10],[0,\"\\n                \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[1,[21,\"summary-task\"],false],[0,\"\\n\"],[10],[0,\"\\n\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
 });
 ;
 
@@ -376,7 +486,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+a0aed666"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+c7a7f787"});
           }
         
 //# sourceMappingURL=buymeapp.map
