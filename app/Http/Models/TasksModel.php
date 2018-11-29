@@ -14,7 +14,15 @@ class TasksModel{
         $params[]=1000;
         $params[]=0;
         try {
-            $res=DB::select('SELECT *  FROM tasks LIMIT ? OFFSET ?',$params);
+            $res=DB::select("SELECT 
+              id,
+              task_name,
+              status,
+              isDeleted,
+              id,
+              DATE_FORMAT(added_date, '%d/%m/%Y %H:%i:%s') as added_date
+ 
+            FROM tasks where isDeleted=0 LIMIT ? OFFSET ?",$params);
         }
         catch (\Exception $e) {
             return $e->getMessage();
@@ -25,11 +33,10 @@ class TasksModel{
     }
     public static function getSummary($data){
         $summary=DB::select('SELECT 
-            SUM(IF(status=1,1,0)) as completed,
-            SUM(IF(status=0,1,0)) as uncompleted,
-            SUM(IF(isDeleted=1,1,0)) as deleted,
-            SUM(status) as total
-              FROM tasks where isDeleted=0');
+            SUM(IF(status=1 ,1,0)) as completed,
+            SUM(IF(status=0 ,1,0)) as uncompleted,
+            count(1) as total
+              FROM tasks WHERE isDeleted=0');
         return $summary;
 
     }
@@ -37,6 +44,41 @@ class TasksModel{
     public static function addNewTask($data){
         try {
             $res=DB::table('tasks')->insert(array('task_name'=>$data['task_name']));
+        }
+        catch (\Exception $e) {
+            return $e->getMessage();
+        }
+
+        return $res;
+
+    }
+    public static function editTask($data){
+        try {
+
+            /*$res=DB::table('tasks')->where('id','=',$data['id'])->update(array(
+                'task_name'=>$data['task_name'],
+               /* 'status'=>$data['status'],
+                'update_date'=>date('Y-m-d h:i:s'),*/
+
+            $res=DB::table('tasks')->where('id','=',$data['id'])->update(array(
+                'update_date'=>date('Y-m-d h:i:s'),
+                'status'=>$data['status'],
+                'task_name'=>$data['task_name'],
+
+            ));
+
+        }
+        catch (\Exception $e) {
+
+            return $e->getMessage();
+        }
+
+        return $res;
+
+    }
+    public static function deleteTask($data){
+        try {
+            $res=DB::table('tasks')->where('id','=',$data['id'])->update(array('isDeleted'=>1));
         }
         catch (\Exception $e) {
             return $e->getMessage();

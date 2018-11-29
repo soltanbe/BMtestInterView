@@ -10,6 +10,22 @@
  }
 .custom-icon-trash{
     font-size: 15px;
-    color:red;
+    color:#dc3545;
     margin-right: 5px;
+}
+.taskDeleted{
+    color:#dc3545
+}
+.taskCompleted{
+    color:#28a745
+}
+.taskUnCompleted{
+    color:#ffc107
+}
+.text-center-in-div{
+    text-align: center;
+}
+.font-size-task{
+    font-size: 20px;
+    font-weight: bold;
 }

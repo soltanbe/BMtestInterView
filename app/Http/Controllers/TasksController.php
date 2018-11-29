@@ -75,5 +75,45 @@ class TasksController extends Controller
         }
 
     }
+    public function deleteTask(Request $request){
+        $requsetd=$request->all();
+        $result=TasksModel::deleteTask($requsetd);
+        if($result==1){
+            return response()->json(
+                array(
+                    'status'=>'success',
+                )
+
+            );
+        }else{
+            return response()->json(
+                array(
+                    'error'=>$result,
+                )
+
+            );
+        }
+
+    }
+    public function editTask(Request $request){
+        $requsetd=$request->all();
+        $result=TasksModel::editTask($requsetd);
+        if($result==1){
+            return response()->json(
+                array(
+                    'status'=>'success',
+                )
+
+            );
+        }else{
+            return response()->json(
+                array(
+                    'error'=>$result,
+                )
+
+            );
+        }
+
+    }
 
 }

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use DB;
 
 class MakeTaskTable extends Migration
 {
@@ -17,8 +18,8 @@ class MakeTaskTable extends Migration
             $table->string('task_name');
             $table->boolean('status')->default(1);
             $table->boolean('isDeleted')->default(0);
-            $table->dateTime('update_date');
-            $table->dateTime('added_date')->default(date('Y-m-d h:i:s'));
+            $table->timestamp('update_date');
+            $table->timestamp('added_date')->default(DB::raw('CURRENT_TIMESTAMP'));
 
         });
     }

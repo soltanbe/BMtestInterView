@@ -16,6 +16,7 @@ export default Component.extend({
                     }
         }).then(function(resp){
                 that.set('task_name','')
+                location.reload();
 
             }).catch(function(error){
                 // handle errors here

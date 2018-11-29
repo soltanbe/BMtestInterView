@@ -4,8 +4,15 @@
     <div class="row">
         <ul class="list-group list-grpuo-custom">
             {{#each model.tasks   as |task|}}
-                <li class="list-group-item">
-                    {{task.task_name}} <span class="pull-right custom-icon-edit" task-id-edit="{{task.id}}"> <i class="fa fa-edit"></i></span><span task-id-delete="{{task.id}}" class="pull-right custom-icon-trash"> <i class="fa fa-trash"></i></span>
+                <li class="list-group-item" >
+                    {{#if task.status}}
+                        <span class="taskCompleted font-size-task">{{task.task_name}}</span>
+                    {{else}}
+                        <span class="taskUnCompleted font-size-task">{{task.task_name}}</span>
+                    {{/if}}
+                    <span >{{task.added_date}}</span>
+                    <span {{action "editTask" task.id task.task_name task.status}} class="pull-right custom-icon-edit"> <i class="fa fa-edit"></i></span>
+                    <span {{action "deleteTask" task.id}} class="pull-right custom-icon-trash"> <i class="fa fa-trash"></i></span>
                 </li>
 
             {{/each}}

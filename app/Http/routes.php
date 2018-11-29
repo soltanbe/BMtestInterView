@@ -50,6 +50,8 @@ Route::group(['prefix' => 'api','middleware' => ['api', 'cors']], function () {
     Route::get('/tasks', 'TasksController@getTasks');
     Route::get('/getSummay', 'TasksController@getSummay');
     Route::post('/add_new_task', 'TasksController@addNewTask');
+    Route::post('/edit', 'TasksController@editTask');
+    Route::post('/delete', 'TasksController@deleteTask');
 
 
 });
