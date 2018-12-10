@@ -1,3 +1,42 @@
+
+<div class="container text-right" style="direction: rtl;">
+    <div class="header-task">
+        <div class="col-md-5 pull-right">
+            <h3>משימות</h3>
+        </div>
+        <div class="col-md-6 pull-left text-left">
+            {{add-task}}
+        </div>
+    </div>
+    <div class="ul-div">
+        <ul class="list-group list-grpuo-custom">
+            {{#each model.tasks   as |task|}}
+                <li class="list-group-item" {{action "editTask" task.id task.task_name task.status on="doubleClick"}} >
+
+                    {{#if task.status}}
+                        <div class="col-md-1 pull-right"><div class="status-completed"></div></div>
+                        <div class="col-md-2 pull-right"><span class="taskCompleted font-size-task">{{task.task_name}}</span></div>
+                    {{else}}
+                        <div class="col-md-1 pull-right"><div class="status-incompleted"></div></div>
+                        <div class="col-md-2 pull-right"><span class="taskUnCompleted font-size-task">{{task.task_name}}</span></div>
+                    {{/if}}
+                    <div class="col-md-7 pull-right">{{task.added_date}}</div>
+                    <div class="col-md-2 pull-right"><span {{action "deleteTask" task.id}} class="pull-left custom-icon-trash"> X</span></div>
+                   <!-- <span >{{task.added_date}}</span>
+                    <span  class="pull-right custom-icon-edit"> <i class="fa fa-edit"></i></span>
+                    <span {{action "deleteTask" task.id}} class="pull-right custom-icon-trash"> <i class="fa fa-trash"></i></span>-->
+                </li>
+
+            {{/each}}
+        </ul>
+    </div>
+    {{summary-task}}
+    <div class="row" style="margin-top: 40px">
+        <h5>*לעריכה נא ללחוץ דאבל קליק</h5>
+    </div>
+
+</div>
+<!--
 <div class="container">
     <h1> Tasks </h1>
     {{add-task}}
@@ -20,6 +59,7 @@
     </div>
     {{summary-task}}
 </div>
+-->
 
 <!--
 $scope.prev_time = moment().format("HH:mm:ss");

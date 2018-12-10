@@ -22,7 +22,7 @@ class TasksModel{
               id,
               DATE_FORMAT(added_date, '%d/%m/%Y %H:%i:%s') as added_date
  
-            FROM tasks where isDeleted=0 LIMIT ? OFFSET ?",$params);
+            FROM tasks where isDeleted=0 order by id desc LIMIT ? OFFSET ?",$params);
         }
         catch (\Exception $e) {
             return $e->getMessage();
@@ -42,12 +42,20 @@ class TasksModel{
     }
 
     public static function addNewTask($data){
-        try {
-            $res=DB::table('tasks')->insert(array('task_name'=>$data['task_name']));
-        }
-        catch (\Exception $e) {
-            return $e->getMessage();
-        }
+
+        $task_name_count=DB::select('select * from tasks where task_name = ? ',array($data['task_name']));
+            if(empty($task_name_count)){
+                try {
+                    $res=DB::table('tasks')->insert(array('task_name'=>$data['task_name']));
+                }
+                catch (\Exception $e) {
+                    return $e->getMessage();
+                }
+
+            }else{
+                $res='is_exist';
+            }
+
 
         return $res;
 

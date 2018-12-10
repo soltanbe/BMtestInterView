@@ -1,1 +1,5 @@
-<div class="row mb-2"><button class="btn btn-info" style="margin-right: 10px;" {{action 'add_new_task'}}> add new task</button> {{input value=task_name  type='text'}}</div>
+<!--
+<div class="row mb-2"><button class="btn btn-info" style="margin-right: 10px;" {{action 'add_new_task'}}> add new task</button> {{input value=task_name  type='text'}}</div>-->
+
+<span class="ml-1">{{input value=task_name  type='text' }}</span><span class="btn btn-add-task" {{action 'add_new_task'}}><i class="fa fa-plus-circle"></i></span>
+

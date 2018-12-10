@@ -58,22 +58,12 @@ class TasksController extends Controller
     public function addNewTask(Request $request){
         $requsetd=$request->all();
         $result=TasksModel::addNewTask($requsetd);
-        if($result==1){
-            return response()->json(
-                array(
-                    'status'=>'success',
-                )
+        return response()->json(
+            array(
+                'status'=>$result,
+            )
 
-            );
-        }else{
-            return response()->json(
-                array(
-                    'error'=>$result,
-                )
-
-            );
-        }
-
+        );
     }
     public function deleteTask(Request $request){
         $requsetd=$request->all();

@@ -44,12 +44,13 @@ export default Route.extend({
         editTask(id,task_name,status){
 
             swal({
-                title: 'Edit Task '+'<b>'+task_name+'</b>'  ,
+                title: 'עריכה משימה '+'<b>'+task_name+'</b>'  ,
                 html: this.buildHtmlForm(id,task_name,status),
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Update',
+                confirmButtonText: 'עדכן',
+                cancelButtonText: 'סגור',
                 onOpen:function(){
                     document.getElementById("status").value=status==true?1:0;
                 }
@@ -57,8 +58,8 @@ export default Route.extend({
                 if (result.value) {
                     this.doActionInServer(id,'edit',document.getElementById("task_name").value,document.getElementById("status").value)
                     swal(
-                        'updated!',
-                        'Your task has been updated successfully.',
+                        'עריכה',
+                        'המשימה עודכנה בהצלחה',
                         'success'
                     ).then(function(){
                         //יש דרך אחרת לטעון את המודל שוב אבל נגמר הזמן לא הספקתי כרגע שם את זה על רגיל עם טעינת דף ואני אחקור את הנושא בנמשך לצורך לצידה ושיפור
@@ -72,19 +73,20 @@ export default Route.extend({
         },
         deleteTask(id){
             swal({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
+                title: 'האם אתה בטוח?',
+                text: "מחיקת משימה",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'כן',
+                cancelButtonText: 'לא',
             }).then((result) => {
                 if (result.value) {
                     this.doActionInServer(id,'delete');
                     swal(
-                        'deleted!',
-                        'Your task has been deleted successfully.',
+                        'מחיקה',
+                        'המשימה נמחקה בהצלה',
                         'success'
                     ).then(function(){
                         //יש דרך אחרת לטעון את המודל שוב אבל נגמר הזמן לא הספקתי כרגע שם את זה על רגיל עם טעינת דף ואני אחקור את הנושא בנמשך לצורך לצידה ושיפור
@@ -124,22 +126,22 @@ export default Route.extend({
         return moment(d).format("DD/MM/YY HH:mm:ss")
     },
     buildHtmlForm:function(id,task_name,status){
-       let html='<hr><form>';
+       let html='<hr><form style="text-align: right">';
         html+='' +
             '<div class="form-group row">' +
-            '<label class="col-md-4">Task Name</label>' +
-            '<div class="col-md-8">' +
+            '<label class="col-md-4 ">שם</label>' +
+            '<div class="col-md-8 ">' +
             '<input type="text" class="form-control" id="task_name" value="'+task_name+'">' +
             '</div>' +
             '</div>' +
             '<div class="form-group row">' +
-            '<label class="col-md-4">Status</label>' +
+            '<label class="col-md-4">סטאטוס</label>' +
             '<div class="col-md-8">' +
             '<select class="form-control" id="status">' +
-            '<option value="1">Completed</option>' +
-            '<option value="0">UnCompleted</option>' +
-            '</select>';
-            '</div>';
+            '<option value="1">הושלם</option>' +
+            '<option value="0">לא הושלם</option>' +
+            '</select>'+
+            '</div>'+
             '</div>';
         html+='<form>';
 
