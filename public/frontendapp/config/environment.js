@@ -4,7 +4,7 @@ module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'buymeapp',
     environment,
-    rootURL: '/buymetest/',
+    rootURL: '/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {

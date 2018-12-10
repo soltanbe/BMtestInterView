@@ -363,22 +363,23 @@
     let that = null;
     exports.default = Ember.Route.extend({
         /* getSum: async function(args) {
-               let result = await Ember.$.ajax({
+        
+             let result = await Ember.$.ajax({
                  url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
                  type: "get",
                  data: {
-                  }
+                   }
              });
-              return result;
+               return result;
          },
          getsummaryData:async function(that){
-              await Ember.$.ajax({
+               await Ember.$.ajax({
                  url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
                  type: "get",
                  data: {
-                  }
+                   }
              }).then(function(resp){
-                  that.summary=resp;
+                   that.summary=resp;
              }).catch(function(error){
                  // handle errors here
              });
@@ -566,7 +567,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+bf6c097c"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+44ed4574"});
           }
         
 //# sourceMappingURL=buymeapp.map

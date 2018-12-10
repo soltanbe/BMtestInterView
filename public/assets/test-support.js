@@ -7798,14 +7798,11 @@ Ember.setupForTesting = testing.setupForTesting;
   'use strict';
 
   function exists(options, message) {
-      if (typeof this.target !== 'string') {
-          throw new TypeError("Unexpected Parameter: " + this.target);
-      }
       if (typeof options === 'string') {
           message = options;
           options = undefined;
       }
-      var elements = this.rootElement.querySelectorAll(this.target);
+      var elements = this.findElements(this.target);
       var expectedCount = options ? options.count : null;
       if (expectedCount === null) {
           var result = elements.length > 0;
@@ -7857,14 +7854,14 @@ Ember.setupForTesting = testing.setupForTesting;
           desc = Array.prototype.slice.call(el, 0, 5).map(elementToString).join(', ');
           return el.length > 5 ? desc + "... (+" + (el.length - 5) + " more)" : desc;
       }
-      if (!(el instanceof HTMLElement)) {
+      if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
           return String(el);
       }
       desc = el.tagName.toLowerCase();
       if (el.id) {
           desc += "#" + el.id;
       }
-      if (el.className) {
+      if (el.className && !(el.className instanceof SVGAnimatedString)) {
           desc += "." + String(el.className).replace(/\s+/g, '.');
       }
       Array.prototype.forEach.call(el.attributes, function (attr) {
@@ -7979,30 +7976,51 @@ Ember.setupForTesting = testing.setupForTesting;
       return false;
   }
 
-  function isVisible(message) {
-      var element = this.findElement();
-      var result = visible(element);
-      var actual = result
-          ? "Element " + this.target + " is visible"
-          : "Element " + this.target + " is not visible";
-      var expected = "Element " + this.target + " is visible";
-      if (!message) {
-          message = expected;
+  function isVisible(options, message) {
+      if (typeof options === 'string') {
+          message = options;
+          options = undefined;
       }
-      this.pushResult({ result: result, actual: actual, expected: expected, message: message });
+      var elements = this.findElements(this.target).filter(visible);
+      var expectedCount = options ? options.count : null;
+      if (expectedCount === null) {
+          var result = elements.length > 0;
+          var expected = format$1(this.target);
+          var actual = result ? expected : format$1(this.target, 0);
+          if (!message) {
+              message = expected;
+          }
+          this.pushResult({ result: result, actual: actual, expected: expected, message: message });
+      }
+      else if (typeof expectedCount === 'number') {
+          var result = elements.length === expectedCount;
+          var actual = format$1(this.target, elements.length);
+          var expected = format$1(this.target, expectedCount);
+          if (!message) {
+              message = expected;
+          }
+          this.pushResult({ result: result, actual: actual, expected: expected, message: message });
+      }
+      else {
+          throw new TypeError("Unexpected Parameter: " + expectedCount);
+      }
   }
-
-  function isNotVisible(message) {
-      var element = this.findElement();
-      var result = !visible(element);
-      var actual = result
-          ? "Element " + this.target + " is not visible"
-          : "Element " + this.target + " is visible";
-      var expected = "Element " + this.target + " is not visible";
-      if (!message) {
-          message = expected;
+  function format$1(selector, num) {
+      if (num === undefined || num === null) {
+          return "Element " + selector + " is visible";
       }
-      this.pushResult({ result: result, actual: actual, expected: expected, message: message });
+      else if (num === 0) {
+          return "Element " + selector + " is not visible";
+      }
+      else if (num === 1) {
+          return "Element " + selector + " is visible once";
+      }
+      else if (num === 2) {
+          return "Element " + selector + " is visible twice";
+      }
+      else {
+          return "Element " + selector + " is visible " + num + " times";
+      }
   }
 
   function isDisabled(message, options) {
@@ -8048,9 +8066,8 @@ Ember.setupForTesting = testing.setupForTesting;
           this.testContext = testContext;
       }
       /**
-       * Assert an [HTMLElement][] (or multiple) matching the `selector` exists.
+       * Assert an {@link HTMLElement} (or multiple) matching the `selector` exists.
        *
-       * @name exists
        * @param {object?} options
        * @param {string?} message
        *
@@ -8064,9 +8081,8 @@ Ember.setupForTesting = testing.setupForTesting;
           exists.call(this, options, message);
       };
       /**
-       * Assert an [HTMLElement][] matching the `selector` does not exists.
+       * Assert an {@link HTMLElement} matching the `selector` does not exists.
        *
-       * @name doesNotExist
        * @param {string?} message
        *
        * @example
@@ -8078,10 +8094,9 @@ Ember.setupForTesting = testing.setupForTesting;
           exists.call(this, { count: 0 }, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is currently checked.
        *
-       * @name isChecked
        * @param {string?} message
        *
        * @example
@@ -8093,10 +8108,9 @@ Ember.setupForTesting = testing.setupForTesting;
           checked.call(this, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is currently unchecked.
        *
-       * @name isNotChecked
        * @param {string?} message
        *
        * @example
@@ -8108,10 +8122,9 @@ Ember.setupForTesting = testing.setupForTesting;
           notChecked.call(this, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is currently focused.
        *
-       * @name isFocused
        * @param {string?} message
        *
        * @example
@@ -8123,10 +8136,9 @@ Ember.setupForTesting = testing.setupForTesting;
           focused.call(this, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is not currently focused.
        *
-       * @name isNotFocused
        * @param {string?} message
        *
        * @example
@@ -8138,10 +8150,9 @@ Ember.setupForTesting = testing.setupForTesting;
           notFocused.call(this, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is currently required.
        *
-       * @name isRequired
        * @param {string?} message
        *
        * @example
@@ -8153,10 +8164,9 @@ Ember.setupForTesting = testing.setupForTesting;
           required.call(this, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is currently not required.
        *
-       * @name isNotRequired
        * @param {string?} message
        *
        * @example
@@ -8168,7 +8178,7 @@ Ember.setupForTesting = testing.setupForTesting;
           notRequired.call(this, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` exists and is visible.
        *
        * Visibility is determined by asserting that:
@@ -8179,19 +8189,20 @@ Ember.setupForTesting = testing.setupForTesting;
        * Additionally, visibility in this case means that the element is visible on the page,
        * but not necessarily in the viewport.
        *
-       * @name isVisible
+       * @param {object?} options
        * @param {string?} message
        *
        * @example
-       * assert.dom('.foo').isVisible();
+       * assert.dom('#title').isVisible();
+       * assert.dom('.choice').isVisible({ count: 4 });
        *
        * @see {@link #isNotVisible}
        */
-      DOMAssertions.prototype.isVisible = function (message) {
-          isVisible.call(this, message);
+      DOMAssertions.prototype.isVisible = function (options, message) {
+          isVisible.call(this, options, message);
       };
       /**
-       * Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       * Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` does not exist or is not visible on the page.
        *
        * Visibility is determined by asserting that:
@@ -8202,7 +8213,6 @@ Ember.setupForTesting = testing.setupForTesting;
        * Additionally, visibility in this case means that the element is visible on the page,
        * but not necessarily in the viewport.
        *
-       * @name isNotVisible
        * @param {string?} message
        *
        * @example
@@ -8211,14 +8221,13 @@ Ember.setupForTesting = testing.setupForTesting;
        * @see {@link #isVisible}
        */
       DOMAssertions.prototype.isNotVisible = function (message) {
-          isNotVisible.call(this, message);
+          isVisible.call(this, { count: 0 }, message);
       };
       /**
-       * Assert that the [HTMLElement][] has an attribute with the provided `name`
+       * Assert that the {@link HTMLElement} has an attribute with the provided `name`
        * and optionally checks if the attribute `value` matches the provided text
        * or regular expression.
        *
-       * @name hasAttribute
        * @param {string} name
        * @param {string|RegExp|object?} value
        * @param {string?} message
@@ -8269,11 +8278,10 @@ Ember.setupForTesting = testing.setupForTesting;
           }
       };
       /**
-       * Assert that the [HTMLElement][] has no attribute with the provided `name`.
+       * Assert that the {@link HTMLElement} has no attribute with the provided `name`.
        *
        * **Aliases:** `hasNoAttribute`, `lacksAttribute`
        *
-       * @name doesNotHaveAttribute
        * @param {string} name
        * @param {string?} message
        *
@@ -8305,10 +8313,9 @@ Ember.setupForTesting = testing.setupForTesting;
           this.doesNotHaveAttribute(name, message);
       };
       /**
-       *  Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       *  Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is disabled.
        *
-       * @name isDisabled
        * @param {string?} message
        *
        * @example
@@ -8320,10 +8327,9 @@ Ember.setupForTesting = testing.setupForTesting;
           isDisabled.call(this, message);
       };
       /**
-       *  Assert that the [HTMLElement][] or an [HTMLElement][] matching the
+       *  Assert that the {@link HTMLElement} or an {@link HTMLElement} matching the
        * `selector` is not disabled.
        *
-       * @name isNotDisabled
        * @param {string?} message
        *
        * @example
@@ -8335,10 +8341,9 @@ Ember.setupForTesting = testing.setupForTesting;
           isDisabled.call(this, message, { inverted: true });
       };
       /**
-       * Assert that the [HTMLElement][] has the `expected` CSS class using
+       * Assert that the {@link HTMLElement} has the `expected` CSS class using
        * [`classList`](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList).
        *
-       * @name hasClass
        * @param {string} expected
        * @param {string?} message
        *
@@ -8359,12 +8364,11 @@ Ember.setupForTesting = testing.setupForTesting;
           this.pushResult({ result: result, actual: actual, expected: expected, message: message });
       };
       /**
-       * Assert that the [HTMLElement][] does not have the `expected` CSS class using
+       * Assert that the {@link HTMLElement} does not have the `expected` CSS class using
        * [`classList`](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList).
        *
        * **Aliases:** `hasNoClass`, `lacksClass`
        *
-       * @name doesNotHaveClass
        * @param {string} expected
        * @param {string?} message
        *
@@ -8391,7 +8395,37 @@ Ember.setupForTesting = testing.setupForTesting;
           this.doesNotHaveClass(expected, message);
       };
       /**
-       * Assert that the text of the [HTMLElement][] or an [HTMLElement][]
+       * Assert that the [HTMLElement][] has the `expected` style declarations using
+       * [`window.getComputedStyle`](https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle).
+       *
+       * @name hasStyle
+       * @param {object} expected
+       * @param {string?} message
+       *
+       * @example
+       * assert.dom('.progress-bar').hasStyle({
+       *   opacity: 1,
+       *   display: 'block'
+       * });
+       *
+       * @see {@link #hasClass}
+       */
+      DOMAssertions.prototype.hasStyle = function (expected, message) {
+          var element = this.findTargetElement();
+          if (!element)
+              return;
+          var computedStyle = window.getComputedStyle(element);
+          var expectedProperties = Object.keys(expected);
+          var result = expectedProperties.every(function (property) { return computedStyle[property] === expected[property]; });
+          var actual = {};
+          expectedProperties.forEach(function (property) { return actual[property] = computedStyle[property]; });
+          if (!message) {
+              message = "Element " + this.targetDescription + " has style \"" + JSON.stringify(expected) + "\"";
+          }
+          this.pushResult({ result: result, actual: actual, expected: expected, message: message });
+      };
+      /**
+       * Assert that the text of the {@link HTMLElement} or an {@link HTMLElement}
        * matching the `selector` matches the `expected` text, using the
        * [`textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
        * attribute and stripping/collapsing whitespace.
@@ -8400,7 +8434,6 @@ Ember.setupForTesting = testing.setupForTesting;
        *
        * **Aliases:** `matchesText`
        *
-       * @name hasText
        * @param {string|RegExp} expected
        * @param {string?} message
        *
@@ -8454,9 +8487,8 @@ Ember.setupForTesting = testing.setupForTesting;
           this.hasText(expected, message);
       };
       /**
-       * Assert that the `textContent` property of an [HTMLElement][] is not empty.
+       * Assert that the `textContent` property of an {@link HTMLElement} is not empty.
        *
-       * @name hasAnyText
        * @param {string?} message
        *
        * @example
@@ -8468,14 +8500,13 @@ Ember.setupForTesting = testing.setupForTesting;
           this.hasText({ any: true }, message);
       };
       /**
-       * Assert that the text of the [HTMLElement][] or an [HTMLElement][]
+       * Assert that the text of the {@link HTMLElement} or an {@link HTMLElement}
        * matching the `selector` contains the given `text`, using the
        * [`textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
        * attribute.
        *
        * **Aliases:** `containsText`, `hasTextContaining`
        *
-       * @name includesText
        * @param {string} text
        * @param {string?} message
        *
@@ -8504,14 +8535,13 @@ Ember.setupForTesting = testing.setupForTesting;
           this.includesText(expected, message);
       };
       /**
-       * Assert that the text of the [HTMLElement][] or an [HTMLElement][]
+       * Assert that the text of the {@link HTMLElement} or an {@link HTMLElement}
        * matching the `selector` does not include the given `text`, using the
        * [`textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
        * attribute.
        *
        * **Aliases:** `doesNotContainText`, `doesNotHaveTextContaining`
        *
-       * @name doesNotIncludeText
        * @param {string} text
        * @param {string?} message
        *
@@ -8541,13 +8571,12 @@ Ember.setupForTesting = testing.setupForTesting;
           this.doesNotIncludeText(unexpected, message);
       };
       /**
-       * Assert that the `value` property of an [HTMLInputElement][] matches
+       * Assert that the `value` property of an {@link HTMLInputElement} matches
        * the `expected` text or regular expression.
        *
        * If no `expected` value is provided, the assertion will fail if the
        * `value` is an empty string.
        *
-       * @name hasValue
        * @param {string|RegExp|object?} expected
        * @param {string?} message
        *
@@ -8592,9 +8621,8 @@ Ember.setupForTesting = testing.setupForTesting;
           }
       };
       /**
-       * Assert that the `value` property of an [HTMLInputElement][] is not empty.
+       * Assert that the `value` property of an {@link HTMLInputElement} is not empty.
        *
-       * @name hasAnyValue
        * @param {string?} message
        *
        * @example
@@ -8607,11 +8635,10 @@ Ember.setupForTesting = testing.setupForTesting;
           this.hasValue({ any: true }, message);
       };
       /**
-       * Assert that the `value` property of an [HTMLInputElement][] is empty.
+       * Assert that the `value` property of an {@link HTMLInputElement} is empty.
        *
        * **Aliases:** `lacksValue`
        *
-       * @name hasNoValue
        * @param {string?} message
        *
        * @example
@@ -8662,6 +8689,23 @@ Ember.setupForTesting = testing.setupForTesting;
           }
           else if (this.target instanceof Element) {
               return this.target;
+          }
+          else {
+              throw new TypeError("Unexpected Parameter: " + this.target);
+          }
+      };
+      /**
+       * Finds a collection of HTMLElement instances from target using querySelectorAll
+       * @private
+       * @returns (HTMLElement[]) an array of HTMLElement instances
+       * @throws TypeError will be thrown if target is an unrecognized type
+       */
+      DOMAssertions.prototype.findElements = function () {
+          if (this.target === null) {
+              return [];
+          }
+          else if (typeof this.target === 'string') {
+              return Array.from(this.rootElement.querySelectorAll(this.target));
           }
           else {
               throw new TypeError("Unexpected Parameter: " + this.target);

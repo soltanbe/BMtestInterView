@@ -68511,7 +68511,7 @@ createDeprecatedModule('resolver');
       this.modelName = modelName;
       this.clientId = clientId;
 
-      this._recordData = store._createRecordData(modelName, id, clientId, this);
+      this.__recordData = null;
 
       // this ensure ordered set can quickly identify this as unique
       this[Ember.GUID_KEY] = InternalModelReferenceId++ + 'internal-model';
@@ -68560,6 +68560,17 @@ createDeprecatedModule('resolver');
         this._recordReference = new RecordReference(this.store, this);
       }
       return this._recordReference;
+    }
+
+    get _recordData() {
+      if (this.__recordData === null) {
+        this._recordData = this.store._createRecordData(this.modelName, this.id, this.clientId, this);
+      }
+      return this.__recordData;
+    }
+
+    set _recordData(newValue) {
+      this.__recordData = newValue;
     }
 
     get _recordArrays() {
@@ -69153,6 +69164,10 @@ createDeprecatedModule('resolver');
     }
 
     hasChangedAttributes() {
+      if (this.isLoading() && !this.isReloading) {
+        // no need to instantiate _recordData in this case
+        return false;
+      }
       return this._recordData.hasChangedAttributes();
     }
 
@@ -69163,6 +69178,10 @@ createDeprecatedModule('resolver');
       @private
     */
     changedAttributes() {
+      if (this.isLoading() && !this.isReloading) {
+        // no need to calculate changed attributes when calling `findRecord`
+        return {};
+      }
       return this._recordData.changedAttributes();
     }
 
@@ -72647,17 +72666,23 @@ createDeprecatedModule('resolver');
       while (queue.length > 0) {
         var node = queue.shift();
         array.push(node);
+
         var related = node._directlyRelatedRecordDatas();
+
         for (var i = 0; i < related.length; ++i) {
           var recordData = related[i];
-          (true && !(recordData._bfsId <= bfsId) && Ember.assert('Internal Error: seen a future bfs iteration', recordData._bfsId <= bfsId));
 
-          if (recordData._bfsId < bfsId) {
-            queue.push(recordData);
-            recordData._bfsId = bfsId;
+          if (recordData instanceof RecordData) {
+            (true && !(recordData._bfsId <= bfsId) && Ember.assert('Internal Error: seen a future bfs iteration', recordData._bfsId <= bfsId));
+
+            if (recordData._bfsId < bfsId) {
+              queue.push(recordData);
+              recordData._bfsId = bfsId;
+            }
           }
         }
       }
+
       return array;
     }
 
@@ -77152,7 +77177,7 @@ createDeprecatedModule('resolver');
       import DS from 'ember-data';
       import { v4 } from 'uuid';
        export default DS.Adapter.extend({
-        generateIdForRecord(store, inputProperties) {
+        generateIdForRecord(store, type, inputProperties) {
           return v4();
         }
       });
@@ -82640,7 +82665,7 @@ createDeprecatedModule('resolver');
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = "3.5.0";
+  exports.default = "3.5.2";
 });
 ;define('ember-inflector/index', ['exports', 'ember-inflector/lib/system', 'ember-inflector/lib/ext/string'], function (exports, _system) {
   'use strict';
