@@ -9,7 +9,7 @@ export default Component.extend({
         add_new_task:function(){
             let that=this;
             Ember.$.ajax({
-                url: 'http://test.nidan.co.il/buymetest/public/index.php/api/add_new_task',
+                url: 'http://localhost/api/add_new_task',
                 type: "POST",
                 data: {
                 task_name: this.get('task_name'),

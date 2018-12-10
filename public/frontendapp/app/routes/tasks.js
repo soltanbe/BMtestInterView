@@ -110,7 +110,7 @@ export default Route.extend({
         }
         console.log(dataSend)
         Ember.$.ajax({
-            url: 'http://test.nidan.co.il/buymetest/public/index.php/api/'+action,
+            url: 'http://localhost/api/'+action,
             type: "POST",
             data: dataSend
         }).then(function(resp){

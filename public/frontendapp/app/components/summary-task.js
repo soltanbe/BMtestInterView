@@ -10,7 +10,7 @@ export default Component.extend({
     getsummaryData:function(that){
 
         Ember.$.ajax({
-            url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
+            url: 'http://localhost/api/getSummay',
             type: "get",
             data: {
 
