@@ -9,7 +9,7 @@
         value: true
     });
     exports.default = _emberData.default.JSONAPIAdapter.extend({
-        host: "http://test.nidan.co.il/buymetest/public/index.php/api"
+        host: "http://localhost/api"
     });
 });
 ;define("buymeapp/adapters/task", ["exports", "ember-data"], function (exports, _emberData) {
@@ -19,7 +19,7 @@
         value: true
     });
     exports.default = _emberData.default.JSONAPIAdapter.extend({
-        host: "http://test.nidan.co.il/buymetest/public/index.php/api"
+        host: "http://localhost/api"
     });
 });
 ;define('buymeapp/app', ['exports', 'buymeapp/resolver', 'ember-load-initializers', 'buymeapp/config/environment'], function (exports, _resolver, _emberLoadInitializers, _environment) {
@@ -55,7 +55,7 @@
             add_new_task: function () {
                 let that = this;
                 Ember.$.ajax({
-                    url: 'http://test.nidan.co.il/buymetest/public/index.php/api/add_new_task',
+                    url: 'http://localhost/api/add_new_task',
                     type: "POST",
                     data: {
                         task_name: this.get('task_name')
@@ -94,7 +94,7 @@
         getsummaryData: function (that) {
 
             Ember.$.ajax({
-                url: 'http://test.nidan.co.il/buymetest/public/index.php/api/getSummay',
+                url: 'http://localhost/api/getSummay',
                 type: "get",
                 data: {}
             }).then(function (resp) {
@@ -449,7 +449,7 @@
             }
             console.log(dataSend);
             Ember.$.ajax({
-                url: 'http://test.nidan.co.il/buymetest/public/index.php/api/' + action,
+                url: 'http://localhost/api/' + action,
                 type: "POST",
                 data: dataSend
             }).then(function (resp) {}).catch(function (error) {
@@ -567,7 +567,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+44ed4574"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+12ca7955"});
           }
         
 //# sourceMappingURL=buymeapp.map

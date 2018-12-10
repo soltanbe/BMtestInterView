@@ -8059,6 +8059,14 @@ Ember.setupForTesting = testing.setupForTesting;
           .replace(/ $/, '');
   }
 
+  /**
+   * This function can be used to convert a NodeList to a regular array.
+   * We should be using `Array.from()` for this, but IE11 doesn't support that :(
+   */
+  function toArray(list) {
+      return Array.prototype.slice.call(list);
+  }
+
   var DOMAssertions = /** @class */ (function () {
       function DOMAssertions(target, rootElement, testContext) {
           this.target = target;
@@ -8432,6 +8440,10 @@ Ember.setupForTesting = testing.setupForTesting;
        *
        * `expected` can also be a regular expression.
        *
+       * > Note: This assertion will collapse whitespace if the type you pass in is a string.
+       * > If you are testing specifically for whitespace integrity, pass your expected text
+       * > in as a RegEx pattern.
+       *
        * **Aliases:** `matchesText`
        *
        * @param {string|RegExp} expected
@@ -8505,6 +8517,11 @@ Ember.setupForTesting = testing.setupForTesting;
        * [`textContent`](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
        * attribute.
        *
+       * > Note: This assertion will collapse whitespace in `textContent` before searching.
+       * > If you would like to assert on a string that *should* contain line breaks, tabs,
+       * > more than one space in a row, or starting/ending whitespace, use the {@link #hasText}
+       * > selector and pass your expected text in as a RegEx pattern.
+       *
        * **Aliases:** `containsText`, `hasTextContaining`
        *
        * @param {string} text
@@ -8525,6 +8542,9 @@ Ember.setupForTesting = testing.setupForTesting;
           var expected = text;
           if (!message) {
               message = "Element " + this.targetDescription + " has text containing \"" + text + "\"";
+          }
+          if (!result && text !== collapseWhitespace(text)) {
+              console.warn('The `.includesText()`, `.containsText()`, and `.hasTextContaining()` assertions collapse whitespace. The text you are checking for contains whitespace that may have made your test fail incorrectly. Try the `.hasText()` assertion passing in your expected text as a RegExp pattern. Your text:\n' + text);
           }
           this.pushResult({ result: result, actual: actual, expected: expected, message: message });
       };
@@ -8705,7 +8725,7 @@ Ember.setupForTesting = testing.setupForTesting;
               return [];
           }
           else if (typeof this.target === 'string') {
-              return Array.from(this.rootElement.querySelectorAll(this.target));
+              return toArray(this.rootElement.querySelectorAll(this.target));
           }
           else {
               throw new TypeError("Unexpected Parameter: " + this.target);
