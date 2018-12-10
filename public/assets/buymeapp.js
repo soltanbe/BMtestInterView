@@ -54,18 +54,32 @@
 
             add_new_task: function () {
                 let that = this;
-                Ember.$.ajax({
-                    url: 'http://localhost/api/add_new_task',
-                    type: "POST",
-                    data: {
-                        task_name: this.get('task_name')
-                    }
-                }).then(function (resp) {
-                    that.set('task_name', '');
-                    location.reload();
-                }).catch(function (error) {
-                    // handle errors here
-                });
+                if (this.get('task_name') != '') {
+                    Ember.$.ajax({
+                        url: 'http://localhost/api/add_new_task',
+                        type: "POST",
+                        data: {
+                            task_name: this.get('task_name')
+                        }
+                    }).then(function (resp) {
+                        that.set('task_name', '');
+                        switch (resp.status) {
+                            case true:
+                                location.reload();
+                                break;
+                            case 'is_exist':
+                                swal('שגיאה', 'שם משימה קיים במערכת , נא לבחור אחר', 'error');
+                                break;
+                            default:
+                                swal('שגיאה', resp.status, 'error');
+                                break;
+                        }
+                    }).catch(function (error) {
+                        // handle errors here
+                    });
+                } else {
+                    swal('שגיאה', 'שדה הינו חובה', 'error');
+                }
 
                 /* this.get('store').query('task', {
                      filter: {
@@ -395,19 +409,20 @@
             editTask(id, task_name, status) {
 
                 swal({
-                    title: 'Edit Task ' + '<b>' + task_name + '</b>',
+                    title: 'עריכה משימה ' + '<b>' + task_name + '</b>',
                     html: this.buildHtmlForm(id, task_name, status),
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Update',
+                    confirmButtonText: 'עדכן',
+                    cancelButtonText: 'סגור',
                     onOpen: function () {
                         document.getElementById("status").value = status == true ? 1 : 0;
                     }
                 }).then(result => {
                     if (result.value) {
                         this.doActionInServer(id, 'edit', document.getElementById("task_name").value, document.getElementById("status").value);
-                        swal('updated!', 'Your task has been updated successfully.', 'success').then(function () {
+                        swal('עריכה', 'המשימה עודכנה בהצלחה', 'success').then(function () {
                             //יש דרך אחרת לטעון את המודל שוב אבל נגמר הזמן לא הספקתי כרגע שם את זה על רגיל עם טעינת דף ואני אחקור את הנושא בנמשך לצורך לצידה ושיפור
                             location.reload();
                             //this.get('target.router').refresh();
@@ -417,17 +432,18 @@
             },
             deleteTask(id) {
                 swal({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    title: 'האם אתה בטוח?',
+                    text: "מחיקת משימה",
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: 'כן',
+                    cancelButtonText: 'לא'
                 }).then(result => {
                     if (result.value) {
                         this.doActionInServer(id, 'delete');
-                        swal('deleted!', 'Your task has been deleted successfully.', 'success').then(function () {
+                        swal('מחיקה', 'המשימה נמחקה בהצלה', 'success').then(function () {
                             //יש דרך אחרת לטעון את המודל שוב אבל נגמר הזמן לא הספקתי כרגע שם את זה על רגיל עם טעינת דף ואני אחקור את הנושא בנמשך לצורך לצידה ושיפור
                             location.reload();
                             //this.get('target.router').refresh();
@@ -460,10 +476,8 @@
             return moment(d).format("DD/MM/YY HH:mm:ss");
         },
         buildHtmlForm: function (id, task_name, status) {
-            let html = '<hr><form>';
-            html += '' + '<div class="form-group row">' + '<label class="col-md-4">Task Name</label>' + '<div class="col-md-8">' + '<input type="text" class="form-control" id="task_name" value="' + task_name + '">' + '</div>' + '</div>' + '<div class="form-group row">' + '<label class="col-md-4">Status</label>' + '<div class="col-md-8">' + '<select class="form-control" id="status">' + '<option value="1">Completed</option>' + '<option value="0">UnCompleted</option>' + '</select>';
-            '</div>';
-            '</div>';
+            let html = '<hr><form style="text-align: right">';
+            html += '' + '<div class="form-group row">' + '<label class="col-md-4 ">שם</label>' + '<div class="col-md-8 ">' + '<input type="text" class="form-control" id="task_name" value="' + task_name + '">' + '</div>' + '</div>' + '<div class="form-group row">' + '<label class="col-md-4">סטאטוס</label>' + '<div class="col-md-8">' + '<select class="form-control" id="status">' + '<option value="1">הושלם</option>' + '<option value="0">לא הושלם</option>' + '</select>' + '</div>' + '</div>';
             html += '<form>';
 
             return html;
@@ -518,7 +532,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "MPnpiB57", "block": "{\"symbols\":[],\"statements\":[[7,\"div\"],[11,\"class\",\"row mb-2\"],[9],[7,\"button\"],[11,\"class\",\"btn btn-info\"],[11,\"style\",\"margin-right: 10px;\"],[3,\"action\",[[22,0,[]],\"add_new_task\"]],[9],[0,\" add new task\"],[10],[0,\" \"],[1,[27,\"input\",null,[[\"value\",\"type\"],[[23,[\"task_name\"]],\"text\"]]],false],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/add-task.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "kNYfYbUN", "block": "{\"symbols\":[],\"statements\":[[2,\"\\n<div class=\\\"row mb-2\\\"><button class=\\\"btn btn-info\\\" style=\\\"margin-right: 10px;\\\" {{action 'add_new_task'}}> add new task</button> {{input value=task_name  type='text'}}</div>\"],[0,\"\\n\\n\"],[7,\"span\"],[11,\"class\",\"ml-1\"],[9],[1,[27,\"input\",null,[[\"value\",\"type\"],[[23,[\"task_name\"]],\"text\"]]],false],[10],[7,\"span\"],[11,\"class\",\"btn btn-add-task\"],[3,\"action\",[[22,0,[]],\"add_new_task\"]],[9],[7,\"i\"],[11,\"class\",\"fa fa-plus-circle\"],[9],[10],[10],[0,\"\\n\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/add-task.hbs" } });
 });
 ;define("buymeapp/templates/components/summary-task", ["exports"], function (exports) {
   "use strict";
@@ -526,7 +540,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "NjIoI9by", "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskCompleted\"],[9],[0,\"\\n        completed : \"],[7,\"b\"],[9],[1,[21,\"completed\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskUnCompleted\"],[9],[0,\"\\n        uncompleted : \"],[7,\"b\"],[9],[1,[21,\"uncompleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div\"],[9],[0,\"\\n        total : \"],[7,\"b\"],[9],[1,[21,\"total\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n   \"],[2,\" <div class=\\\"col-md-3 taskDeleted\\\">\\n        deleted : <b>{{deleted}}</b>\\n    </div>\"],[0,\"\\n\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/summary-task.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "YJfDqROy", "block": "{\"symbols\":[],\"statements\":[[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskUnCompleted\"],[9],[0,\"\\n        \"],[7,\"span\"],[9],[0,\"לסיום:\"],[10],[0,\" \"],[7,\"b\"],[9],[1,[21,\"uncompleted\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskUnCompleted\"],[9],[0,\"\\n        \"],[7,\"span\"],[9],[0,\"הושלמו:\"],[10],[0,\" \"],[7,\"b\"],[9],[1,[21,\"completed\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"col-md-4 text-center-in-div taskUnCompleted\"],[9],[0,\"\\n        \"],[7,\"span\"],[9],[0,\"סכ\\\"ה:\"],[10],[0,\" \"],[7,\"b\"],[9],[1,[21,\"total\"],false],[10],[0,\"\\n    \"],[10],[0,\"\\n   \"],[2,\" <div class=\\\"col-md-3 taskDeleted\\\">\\n        deleted : <b>{{deleted}}</b>\\n    </div>\"],[0,\"\\n\"],[10]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/components/summary-task.hbs" } });
 });
 ;define("buymeapp/templates/posts", ["exports"], function (exports) {
   "use strict";
@@ -542,7 +556,7 @@
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.default = Ember.HTMLBars.template({ "id": "aJj+rXPX", "block": "{\"symbols\":[\"task\"],\"statements\":[[7,\"div\"],[11,\"class\",\"container\"],[9],[0,\"\\n    \"],[7,\"h1\"],[9],[0,\" Tasks \"],[10],[0,\"\\n    \"],[1,[21,\"add-task\"],false],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[9],[0,\"\\n        \"],[7,\"ul\"],[11,\"class\",\"list-group list-grpuo-custom\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\",\"tasks\"]]],null,{\"statements\":[[0,\"                \"],[7,\"li\"],[11,\"class\",\"list-group-item\"],[9],[0,\"\\n\"],[4,\"if\",[[22,1,[\"status\"]]],null,{\"statements\":[[0,\"                        \"],[7,\"span\"],[11,\"class\",\"taskCompleted font-size-task\"],[9],[1,[22,1,[\"task_name\"]],false],[10],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"                        \"],[7,\"span\"],[11,\"class\",\"taskUnCompleted font-size-task\"],[9],[1,[22,1,[\"task_name\"]],false],[10],[0,\"\\n\"]],\"parameters\":[]}],[0,\"                    \"],[7,\"span\"],[9],[1,[22,1,[\"added_date\"]],false],[10],[0,\"\\n                    \"],[7,\"span\"],[11,\"class\",\"pull-right custom-icon-edit\"],[3,\"action\",[[22,0,[]],\"editTask\",[22,1,[\"id\"]],[22,1,[\"task_name\"]],[22,1,[\"status\"]]]],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-edit\"],[9],[10],[10],[0,\"\\n                    \"],[7,\"span\"],[11,\"class\",\"pull-right custom-icon-trash\"],[3,\"action\",[[22,0,[]],\"deleteTask\",[22,1,[\"id\"]]]],[9],[0,\" \"],[7,\"i\"],[11,\"class\",\"fa fa-trash\"],[9],[10],[10],[0,\"\\n                \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[1,[21,\"summary-task\"],false],[0,\"\\n\"],[10],[0,\"\\n\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
+  exports.default = Ember.HTMLBars.template({ "id": "dhwB3LNZ", "block": "{\"symbols\":[\"task\"],\"statements\":[[0,\"\\n\"],[7,\"div\"],[11,\"class\",\"container text-right\"],[11,\"style\",\"direction: rtl;\"],[9],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"header-task\"],[9],[0,\"\\n        \"],[7,\"div\"],[11,\"class\",\"col-md-5 pull-right\"],[9],[0,\"\\n            \"],[7,\"h3\"],[9],[0,\"משימות\"],[10],[0,\"\\n        \"],[10],[0,\"\\n        \"],[7,\"div\"],[11,\"class\",\"col-md-6 pull-left text-left\"],[9],[0,\"\\n            \"],[1,[21,\"add-task\"],false],[0,\"\\n        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"ul-div\"],[9],[0,\"\\n        \"],[7,\"ul\"],[11,\"class\",\"list-group list-grpuo-custom\"],[9],[0,\"\\n\"],[4,\"each\",[[23,[\"model\",\"tasks\"]]],null,{\"statements\":[[0,\"                \"],[7,\"li\"],[11,\"class\",\"list-group-item\"],[3,\"action\",[[22,0,[]],\"editTask\",[22,1,[\"id\"]],[22,1,[\"task_name\"]],[22,1,[\"status\"]]],[[\"on\"],[\"doubleClick\"]]],[9],[0,\"\\n\\n\"],[4,\"if\",[[22,1,[\"status\"]]],null,{\"statements\":[[0,\"                        \"],[7,\"div\"],[11,\"class\",\"col-md-1 pull-right\"],[9],[7,\"div\"],[11,\"class\",\"status-completed\"],[9],[10],[10],[0,\"\\n                        \"],[7,\"div\"],[11,\"class\",\"col-md-2 pull-right\"],[9],[7,\"span\"],[11,\"class\",\"taskCompleted font-size-task\"],[9],[1,[22,1,[\"task_name\"]],false],[10],[10],[0,\"\\n\"]],\"parameters\":[]},{\"statements\":[[0,\"                        \"],[7,\"div\"],[11,\"class\",\"col-md-1 pull-right\"],[9],[7,\"div\"],[11,\"class\",\"status-incompleted\"],[9],[10],[10],[0,\"\\n                        \"],[7,\"div\"],[11,\"class\",\"col-md-2 pull-right\"],[9],[7,\"span\"],[11,\"class\",\"taskUnCompleted font-size-task\"],[9],[1,[22,1,[\"task_name\"]],false],[10],[10],[0,\"\\n\"]],\"parameters\":[]}],[0,\"                    \"],[7,\"div\"],[11,\"class\",\"col-md-7 pull-right\"],[9],[1,[22,1,[\"added_date\"]],false],[10],[0,\"\\n                    \"],[7,\"div\"],[11,\"class\",\"col-md-2 pull-right\"],[9],[7,\"span\"],[11,\"class\",\"pull-left custom-icon-trash\"],[3,\"action\",[[22,0,[]],\"deleteTask\",[22,1,[\"id\"]]]],[9],[0,\" X\"],[10],[10],[0,\"\\n                   \"],[2,\" <span >{{task.added_date}}</span>\\n                    <span  class=\\\"pull-right custom-icon-edit\\\"> <i class=\\\"fa fa-edit\\\"></i></span>\\n                    <span {{action \\\"deleteTask\\\" task.id}} class=\\\"pull-right custom-icon-trash\\\"> <i class=\\\"fa fa-trash\\\"></i></span>\"],[0,\"\\n                \"],[10],[0,\"\\n\\n\"]],\"parameters\":[1]},null],[0,\"        \"],[10],[0,\"\\n    \"],[10],[0,\"\\n    \"],[1,[21,\"summary-task\"],false],[0,\"\\n    \"],[7,\"div\"],[11,\"class\",\"row\"],[11,\"style\",\"margin-top: 40px\"],[9],[0,\"\\n        \"],[7,\"h5\"],[9],[0,\"*לעריכה נא ללחוץ דאבל קליק\"],[10],[0,\"\\n    \"],[10],[0,\"\\n\\n\"],[10],[0,\"\\n\"],[2,\"\\n<div class=\\\"container\\\">\\n    <h1> Tasks </h1>\\n    {{add-task}}\\n    <div class=\\\"row\\\">\\n        <ul class=\\\"list-group list-grpuo-custom\\\">\\n{{#each model.tasks   as |task|}}\\n                <li class=\\\"list-group-item\\\" >\\n                    {{#if task.status}}\\n                        <span class=\\\"taskCompleted font-size-task\\\">{{task.task_name}}</span>\\n                    {{else}}\\n                        <span class=\\\"taskUnCompleted font-size-task\\\">{{task.task_name}}</span>\\n                    {{/if}}\\n                    <span >{{task.added_date}}</span>\\n                    <span {{action \\\"editTask\\\" task.id task.task_name task.status}} class=\\\"pull-right custom-icon-edit\\\"> <i class=\\\"fa fa-edit\\\"></i></span>\\n                    <span {{action \\\"deleteTask\\\" task.id}} class=\\\"pull-right custom-icon-trash\\\"> <i class=\\\"fa fa-trash\\\"></i></span>\\n                </li>\\n\\n            {{/each}}        </ul>\\n    </div>\\n    {{summary-task}}\\n</div>\\n\"],[0,\"\\n\\n\"],[2,\"\\n$scope.prev_time = moment().format(\\\"HH:mm:ss\\\");\\n$scope.prev_date = moment().format(\\\"DD/MM/YY\\\");\"],[0,\"\\n\"]],\"hasEval\":false}", "meta": { "moduleName": "buymeapp/templates/tasks.hbs" } });
 });
 ;
 
@@ -567,7 +581,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+12ca7955"});
+            require("buymeapp/app")["default"].create({"name":"buymeapp","version":"0.0.0+e68f3147"});
           }
         
 //# sourceMappingURL=buymeapp.map
